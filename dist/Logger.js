@@ -36,6 +36,8 @@ let logFunLazy = (level, msg) => {
     return logFun(level, msg);
 };
 let logFun = (level, msg) => {
+    if (!Logger.enabledFor(level))
+        return msg;
     let obj;
     let log;
     if (typeof msg === "function") {

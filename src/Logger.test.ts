@@ -1,4 +1,4 @@
-import { Logger } from "./Logger.js"
+import { Logger, LogLevel } from "./Logger.js"
 import { expect, it, vi } from "vitest"
 
 it("should log", () => {
@@ -28,4 +28,14 @@ it("logs errors", () => {
 
   expect(errorReturnType).toBeInstanceOf(Error)
   expect(stringReturnType).toBe("msg 4")
+})
+
+it("will not log if level is not enabled", () => {
+  Logger.config.withTimestamp = false
+  vi.spyOn(console, "info").mockImplementation(() => {})
+
+  Logger.setLevel(LogLevel.ERROR)
+  Logger.info("msg 1")
+
+  expect(console.info).not.toHaveBeenCalled()
 })

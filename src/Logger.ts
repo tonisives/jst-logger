@@ -47,6 +47,8 @@ let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): T | unde
 }
 
 let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): T => {
+  if (!Logger.enabledFor(level)) return msg as T
+
   let obj: T
   let log: string
   if (typeof msg === "function") {
