@@ -40,6 +40,8 @@ export let Logger = {
   traceL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.TRACE, msg),
 }
 
+export let l = Logger
+
 let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): T | undefined => {
   if (!Logger.enabledFor(level)) return
 
