@@ -15,7 +15,7 @@ type Config = {
   truncate?: number
   withTimestamp?: boolean
 }
-
+ 
 export let Logger = {
   level: LogLevel.DEBUG,
   config: { truncate: 10_000, withTimestamp: true },
@@ -39,6 +39,8 @@ export let Logger = {
   trace: <T extends Input>(msg: T) => logFun(LogLevel.TRACE, msg),
   traceL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.TRACE, msg),
 }
+
+export let l = Logger
 
 let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): T | undefined => {
   if (!Logger.enabledFor(level)) return

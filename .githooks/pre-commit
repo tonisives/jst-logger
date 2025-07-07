@@ -2,49 +2,69 @@
 
 set -e
 
+# Add common Node.js installation paths
+# Add common Node.js installation paths
+export PATH=$PATH:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/opt/homebrew/opt/node@22/bin:/opt/homebrew/opt/node/bin:$HOME/.nvm/versions/node/*/bin
+
+# Check if Node.js is installed
+if ! command -v node >/dev/null 2>&1; then
+    echo "Error: Node.js is not installed or not in PATH"
+    exit 1
+fi
+
+# Check if yarn is installed
+if ! command -v yarn >/dev/null 2>&1; then
+    echo "Error: yarn is not installed or not in PATH"
+    exit 1
+fi
+
 function check_todo() {
-  TODO_REGEX='// TODO'
-  FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts" | tr '\n' ' ')
-  if [ -n "$FILES" ]; then
-    # Check for the TODO_REGEX in each staged .ts file
-    for FILE in $FILES; do
-      if grep -q "$TODO_REGEX" "$FILE"; then
-        echo "ERROR: Found 'TODO' reference in $FILE"
-        echo "Please remove 'TODO' comments before committing."
-        exit 1
-      fi
-    done
-  fi
+    TODO_REGEX='// TODO'
+    FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts" | tr '\n' ' ')
+    if [ -n "$FILES" ]; then
+        for FILE in $FILES; do
+            if grep -q "$TODO_REGEX" "$FILE"; then
+                echo "ERROR: Found 'TODO' reference in $FILE"
+                echo "Please remove 'TODO' comments before committing."
+                exit 1
+            fi
+        done
+    fi
 }
 
 function check_no_it_only() {
-  ONLY_REGEX='.only('
-  FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts" | tr '\n' ' ')
-  if [ -n "$FILES" ]; then
-    # Check for the ONLY_REGEX in each staged test.ts file
-    for FILE in $FILES; do
-      if grep -q "$ONLY_REGEX" "$FILE"; then
-        echo "ERROR: Found 'only.' reference in $FILE"
-        echo "Please remove 'only.' comments before committing."
-        exit 1
-      fi
-    done
-  fi
+    ONLY_REGEX='.only('
+    FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts" | tr '\n' ' ')
+    if [ -n "$FILES" ]; then
+        for FILE in $FILES; do
+            if grep -q "$ONLY_REGEX" "$FILE"; then
+                echo "ERROR: Found 'only.' reference in $FILE"
+                echo "Please remove 'only.' comments before committing."
+                exit 1
+            fi
+        done
+    fi
 }
 
 function check_committer() {
-  COMMITTER_NAME=$(git config user.name)
-  if [ "$COMMITTER_NAME" != "tonisives" ]; then
-    echo "not tonisives"
-    exit 1
-  fi
+    COMMITTER_NAME=$(git config user.name)
+    if [ "$COMMITTER_NAME" != "tonisives" ]; then
+        echo "not tonisives"
+        exit 1
+    fi
 }
 
 function build_dist() {
-  yarn test
-  yarn build
-  git add dist
+    yarn test
+    yarn build
+    git add dist
 }
+
+# Make sure we're in the project root directory
+if [ ! -f "package.json" ]; then
+    echo "Error: package.json not found. Make sure you're in the project root directory."
+    exit 1
+fi
 
 check_committer
 check_todo

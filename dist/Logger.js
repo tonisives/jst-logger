@@ -30,6 +30,7 @@ export let Logger = {
     trace: (msg) => logFun(LogLevel.TRACE, msg),
     traceL: (msg) => logFunLazy(LogLevel.TRACE, msg),
 };
+export let l = Logger;
 let logFunLazy = (level, msg) => {
     if (!Logger.enabledFor(level))
         return;
