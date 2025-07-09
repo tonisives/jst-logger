@@ -38,7 +38,7 @@ let logFunLazy = (level, msg) => {
 };
 let logFun = (level, msg) => {
     if (!Logger.enabledFor(level))
-        return msg;
+        return void 0;
     let obj;
     let log;
     if (typeof msg === "function") {
@@ -71,7 +71,6 @@ let logFun = (level, msg) => {
         log = `[${new Date().toISOString()}] ${log}`;
     }
     hdlr.call(console, log);
-    return obj;
 };
 const truncate = (log) => {
     if (Logger.config.truncate && Logger.config.truncate > 0 && log.length > Logger.config.truncate) {

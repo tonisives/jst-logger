@@ -22,12 +22,6 @@ it("logs errors", () => {
 
   expect(console.error).toHaveBeenCalledWith("msg 1")
   expect(console.error).toHaveBeenCalledWith("msg 2")
-
-  let errorReturnType: Error = Logger.error(new Error("msg 3"))
-  let stringReturnType: string = Logger.error("msg 4")
-
-  expect(errorReturnType).toBeInstanceOf(Error)
-  expect(stringReturnType).toBe("msg 4")
 })
 
 it("will not log if level is not enabled", () => {

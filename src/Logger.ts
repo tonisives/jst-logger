@@ -15,7 +15,7 @@ type Config = {
   truncate?: number
   withTimestamp?: boolean
 }
- 
+
 export let Logger = {
   level: LogLevel.DEBUG,
   config: { truncate: 10_000, withTimestamp: true },
@@ -42,14 +42,14 @@ export let Logger = {
 
 export let l = Logger
 
-let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): T | undefined => {
+let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): void => {
   if (!Logger.enabledFor(level)) return
 
   return logFun(level, msg)
 }
 
-let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): T => {
-  if (!Logger.enabledFor(level)) return msg as T
+let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => {
+  if (!Logger.enabledFor(level)) return void 0
 
   let obj: T
   let log: string
@@ -84,8 +84,6 @@ let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): T => {
   }
 
   hdlr.call(console, log)
-
-  return obj
 }
 
 const truncate = (log: string) => {
