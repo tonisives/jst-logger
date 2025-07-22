@@ -73,6 +73,8 @@ let logFun = (level, msg) => {
     hdlr.call(console, log);
 };
 const truncate = (log) => {
+    if (typeof log !== "string")
+        return log;
     if (Logger.config.truncate && Logger.config.truncate > 0 && log.length > Logger.config.truncate) {
         let top = Math.floor(Logger.config.truncate * 0.65);
         let bottom = Math.floor(Logger.config.truncate * 0.35);

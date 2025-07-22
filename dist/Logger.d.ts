@@ -6,7 +6,7 @@ export declare enum LogLevel {
     ERROR = 4,
     OFF = 5
 }
-type Input = string | Error;
+type Input = string | Error | object;
 type InputGen<T extends Input> = T;
 type LazyInput<T extends InputGen<any>> = () => T;
 type Config = {

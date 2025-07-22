@@ -7,7 +7,8 @@ export enum LogLevel {
   OFF,
 }
 
-type Input = string | Error
+type Input = string | Error | object
+
 type InputGen<T extends Input> = T
 type LazyInput<T extends InputGen<any>> = () => T
 
@@ -52,7 +53,7 @@ let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => 
   if (!Logger.enabledFor(level)) return void 0
 
   let obj: T
-  let log: string
+  let log: string | object
   if (typeof msg === "function") {
     obj = msg()
   } else {
@@ -86,7 +87,9 @@ let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => 
   hdlr.call(console, log)
 }
 
-const truncate = (log: string) => {
+const truncate = (log: Input) => {
+  if (typeof log !== "string") return log
+
   if (Logger.config.truncate && Logger.config.truncate > 0 && log.length > Logger.config.truncate) {
     let top = Math.floor(Logger.config.truncate * 0.65)
     let bottom = Math.floor(Logger.config.truncate * 0.35)
