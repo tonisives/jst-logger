@@ -47,13 +47,7 @@ let logFun = (level, msg) => {
     else {
         obj = msg;
     }
-    if (obj instanceof Error) {
-        log = obj.message;
-    }
-    else {
-        log = obj;
-    }
-    log = truncate(log);
+    log = truncate(obj);
     let hdlr = console.log;
     if (level === LogLevel.WARN && console.warn) {
         hdlr = console.warn;
@@ -68,9 +62,11 @@ let logFun = (level, msg) => {
         hdlr = console.debug;
     }
     if (Logger.config.withTimestamp) {
-        log = `[${new Date().toISOString()}] ${log}`;
+        hdlr(`[${new Date().toISOString()}]`, log);
     }
-    hdlr.call(console, log);
+    else {
+        hdlr(log);
+    }
 };
 const truncate = (log) => {
     if (typeof log !== "string")

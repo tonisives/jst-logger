@@ -53,20 +53,14 @@ let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => 
   if (!Logger.enabledFor(level)) return void 0
 
   let obj: T
-  let log: string | object
+  let log: Input
   if (typeof msg === "function") {
     obj = msg()
   } else {
     obj = msg
   }
 
-  if (obj instanceof Error) {
-    log = obj.message
-  } else {
-    log = obj
-  }
-
-  log = truncate(log)
+  log = truncate(obj)
 
   let hdlr = console.log
 
@@ -81,10 +75,10 @@ let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => 
   }
 
   if (Logger.config.withTimestamp) {
-    log = `[${new Date().toISOString()}] ${log}`
+    hdlr(`[${new Date().toISOString()}]`, log)
+  } else {
+    hdlr(log)
   }
-
-  hdlr.call(console, log)
 }
 
 const truncate = (log: Input) => {

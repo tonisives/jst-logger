@@ -20,7 +20,7 @@ it("logs errors", () => {
   Logger.errorL(() => new Error("msg 1"))
   Logger.error("msg 2")
 
-  expect(console.error).toHaveBeenCalledWith("msg 1")
+  expect(console.error).toHaveBeenCalledWith(new Error("msg 1"))
   expect(console.error).toHaveBeenCalledWith("msg 2")
 })
 
