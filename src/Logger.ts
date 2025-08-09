@@ -7,10 +7,9 @@ export enum LogLevel {
   OFF,
 }
 
-type Input = string | Error | object
+type Input = any 
 
-type InputGen<T extends Input> = T
-type LazyInput<T extends InputGen<any>> = () => T
+type LazyInput = () => Input
 
 type Config = {
   truncate?: number
@@ -29,30 +28,30 @@ export let Logger = {
   setConfig: (config: Config) => {
     Logger.config = { ...Logger.config, ...config }
   },
-  info: <T extends Input>(msg: T) => logFun(LogLevel.INFO, msg),
-  infoL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.INFO, msg),
-  warn: <T extends Input>(msg: T) => logFun(LogLevel.WARN, msg),
-  warnL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.WARN, msg),
-  error: <T extends Input>(msg: T) => logFun(LogLevel.ERROR, msg),
-  errorL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.ERROR, msg),
-  debug: <T extends Input>(msg: T) => logFun(LogLevel.DEBUG, msg),
-  debugL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.DEBUG, msg),
-  trace: <T extends Input>(msg: T) => logFun(LogLevel.TRACE, msg),
-  traceL: <T extends Input>(msg: LazyInput<T>) => logFunLazy(LogLevel.TRACE, msg),
+  info: (msg: Input) => logFun(LogLevel.INFO, msg),
+  infoL: (msg: LazyInput) => logFunLazy(LogLevel.INFO, msg),
+  warn: (msg: Input) => logFun(LogLevel.WARN, msg),
+  warnL: (msg: LazyInput) => logFunLazy(LogLevel.WARN, msg),
+  error: (msg: Input) => logFun(LogLevel.ERROR, msg),
+  errorL: (msg: LazyInput) => logFunLazy(LogLevel.ERROR, msg),
+  debug: (msg: Input) => logFun(LogLevel.DEBUG, msg),
+  debugL: (msg: LazyInput) => logFunLazy(LogLevel.DEBUG, msg),
+  trace: (msg: Input) => logFun(LogLevel.TRACE, msg),
+  traceL: (msg: LazyInput) => logFunLazy(LogLevel.TRACE, msg),
 }
 
 export let l = Logger
 
-let logFunLazy = <T extends Input>(level: LogLevel, msg: LazyInput<T>): void => {
+let logFunLazy = (level: LogLevel, msg: LazyInput): void => {
   if (!Logger.enabledFor(level)) return
 
   return logFun(level, msg)
 }
 
-let logFun = <T extends Input>(level: LogLevel, msg: T | LazyInput<T>): void => {
+let logFun = (level: LogLevel, msg: Input | LazyInput): void => {
   if (!Logger.enabledFor(level)) return void 0
 
-  let obj: T
+  let obj: Input
   let log: Input
   if (typeof msg === "function") {
     obj = msg()
